@@ -1,3 +1,3 @@
-# tph
+# TPH package
 
-Python code for downloading over radio microbit tph data and storing.
+A package to download temperature, pressure, humidty from microbit.
