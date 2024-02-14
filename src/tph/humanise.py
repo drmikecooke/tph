@@ -5,7 +5,7 @@ from .TPHlrgb import corrected
 dataFormat='\n{:02n},{:2.1f},{:4.1f},{:2.1f},{},{},{},{}'
 head="t/h,T/°C,P/hPa,H/%RH,L,R,G,B"
 
-location=Path("~/Documents/tph").expanduser()
+location=Path("/home/mike/Documents/github/tph-data")
 source=location/Path("binary")
 drain=location/Path("humanised")
 

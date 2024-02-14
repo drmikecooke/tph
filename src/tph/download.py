@@ -11,7 +11,12 @@ from glob import glob
 def addrBytes(x):return x.to_bytes(2,'little')
 def little(bs):return int.from_bytes(bs,'little')
 
-location=Path("~/Documents/tph/binary").expanduser()
+location=Path("/home/mike/Documents/github/tph-data/binary")
+
+def checkdata(condition,message):
+	if condition:
+		print("Yelp!:",message)
+		exit(1)
 
 def getData(dev,command):
 	dev.write(command)
@@ -19,23 +24,20 @@ def getData(dev,command):
 	return dev.read(dev.in_waiting)
 	
 def fileTPH():
-	if not glob("/dev/ttyACM*"):
-		print("No mubit attached")
-		exit(1)
+	checkdata(not glob("/dev/ttyACM*"),"no mubit attached")
 	mubit=Serial(glob("/dev/ttyACM*")[0],115200,timeout=1)
 	print("Microbit opened.")
-	bepoch=getData(mubit,b'T') # repoch bytes
-	if len(bepoch)!=4:
-		print("Yelp!")
-		exit(1)
+	bepoch=getData(mubit,b'T') # get device epoch bytes
+	checkdata(len(bepoch)!=4,"no binary epoch")
 	repoch=little(bepoch)
-	epoch0=time()-repoch
+	epoch0=time()-repoch #
 	hour0=round(epoch0/3600)
 	bpath=location/Path(f"{int(epoch0)}.bin")
 	print("Binary path:",bpath)
 	print('Epoch0:',epoch0,"Hour0:",hour0)
 	records=little(getData(mubit,b'N'))//16
 	print("Records:",records)
+	checkdata(records==0,"no records")
 	binary=b''
 	for n in range(records):
 		record=getData(mubit,b'B'+addrBytes(n*16)+b'\x10')
